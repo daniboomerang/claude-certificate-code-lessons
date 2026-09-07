@@ -1,0 +1,11 @@
+{
+  "name": "claude-certificate-code-lessons",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lesson:1.1": "node 01-agentic-architecture-and-orchestration/1.1-agentic-loops/agent-loop.mjs",
+    "lesson:1.2": "node 01-agentic-architecture-and-orchestration/1.2-orchestration-patterns/hub-and-spoke.mjs",
+    "test": "npm run lesson:1.1 && npm run lesson:1.2"
+  }
+}
+
