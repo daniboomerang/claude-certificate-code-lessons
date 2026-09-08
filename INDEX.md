@@ -1,6 +1,6 @@
 # CCAR-F lesson index
 
-Each completed lesson links to its explanation and runnable example. Unlinked items are placeholders for future lessons.
+Each completed lesson links to its explanation and code example. Unlinked items are placeholders for future lessons.
 
 ## Domain 1 — Agentic Architecture & Orchestration (27%)
 
@@ -8,7 +8,8 @@ Each completed lesson links to its explanation and runnable example. Unlinked it
   - [Code example](./01-agentic-architecture-and-orchestration/1.1-agentic-loops/agent-loop.mjs)
 - [1.2 — Orchestrate multi-agent systems with coordinator-subagent patterns](./01-agentic-architecture-and-orchestration/1.2-orchestration-patterns/README.md)
   - [Code example](./01-agentic-architecture-and-orchestration/1.2-orchestration-patterns/hub-and-spoke.mjs)
-- 1.3 — Configure subagent invocation, context passing, and spawning
+- [1.3 — Configure subagent invocation, context passing, and spawning](./01-agentic-architecture-and-orchestration/1.3-subagent-invocation-context/README.md)
+  - [Pseudocode example](./01-agentic-architecture-and-orchestration/1.3-subagent-invocation-context/context-passing.ts)
 - 1.4 — Implement multi-step workflows with enforcement and handoff patterns
 - 1.5 — Apply Agent SDK hooks for tool call interception and data normalization
 - 1.6 — Design task decomposition strategies for complex workflows
