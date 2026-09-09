@@ -10,7 +10,8 @@ Each completed lesson links to its explanation and code example. Unlinked items 
   - [Code example](./01-agentic-architecture-and-orchestration/1.2-orchestration-patterns/hub-and-spoke.mjs)
 - [1.3 — Configure subagent invocation, context passing, and spawning](./01-agentic-architecture-and-orchestration/1.3-subagent-invocation-context/README.md)
   - [Pseudocode example](./01-agentic-architecture-and-orchestration/1.3-subagent-invocation-context/context-passing.ts)
-- 1.4 — Implement multi-step workflows with enforcement and handoff patterns
+- [1.4 — Implement multi-step workflows with enforcement and handoff patterns](./01-agentic-architecture-and-orchestration/1.4-workflow-enforcement-handoff/README.md)
+  - [Pseudocode example](./01-agentic-architecture-and-orchestration/1.4-workflow-enforcement-handoff/workflow-gate.ts)
 - 1.5 — Apply Agent SDK hooks for tool call interception and data normalization
 - 1.6 — Design task decomposition strategies for complex workflows
 - 1.7 — Manage session state, resumption, and forking
@@ -49,4 +50,3 @@ Each completed lesson links to its explanation and code example. Unlinked items 
 - 5.4 — Manage context effectively in large codebase exploration
 - 5.5 — Design human review workflows and confidence calibration
 - 5.6 — Preserve information provenance and handle uncertainty in multi-source synthesis
-
