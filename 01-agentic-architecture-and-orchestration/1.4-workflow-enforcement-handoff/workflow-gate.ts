@@ -42,4 +42,3 @@ function createHandoff() {
     recommendedAction: 'Review the duplicate charge and approve or reject the refund.'
   }
 }
-

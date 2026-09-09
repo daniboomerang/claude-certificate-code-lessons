@@ -75,4 +75,3 @@ recommended action
 ## Active recall
 
 Claude tries `process_refund` before `get_customer`. Which part is supposed to stop the mistake: the model prompt, the coordinator plan, or the refund handler?
-
