@@ -1,73 +1,103 @@
 # Domain 1 · Lesson 1.1 · Agentic Loops
 
-## Where this belongs
+## Official location
 
-- Certification domain: **1 — Agentic Architecture & Orchestration**
-- Curriculum task: **1.1 — Agentic Loops**
-- Curriculum lesson: [Agentic Loops](https://claudecertificationguide.com/learn/1-agentic-architecture/1-1-agentic-loops)
-- Official Anthropic documentation: [How tool use works](https://platform.claude.com/docs/en/agents-and-tools/tool-use/how-tool-use-works)
+- Domain: **1 — Agentic Architecture & Orchestration**
+- Task statement: **1.1 — Design and implement agentic loops for autonomous task execution**
+- Curriculum: [Agentic Loops](https://claudecertificationguide.com/learn/1-agentic-architecture/1-1-agentic-loops)
+- Official documentation: [How tool use works](https://platform.claude.com/docs/en/agents-and-tools/tool-use/how-tool-use-works)
 
 ## Module identity — one agent using tools
 
-**What this module is:** The basic runtime loop for **one Claude conversation**. Claude can request a tool, but external code executes it and returns the result. The coordinator keeps calling the same conversation until Claude finishes.
+**What this is:** The basic runtime loop for **one Claude conversation**.
 
-**One thing to remember:** **Claude chooses; code executes; the loop continues.**
+**Remember:** **Claude chooses; code executes; the loop continues.**
 
-**What it is not:** This is not multi-agent orchestration. The calculator is a deterministic tool, not another agent, and Claude does not run the calculator code itself.
+**Not this:** The calculator is a tool, not a second agent. Claude requests it; the external host/runtime executes its code.
 
-**Actor naming:** In this lesson, “coordinator” means the **external host/runtime code** running the loop. It is not a coordinator agent. In 1.2 and 1.3, “coordinator” means a **Claude agent role** that plans and delegates; its tool requests are still executed by an underlying runtime like this one.
-
-**How it differs from the next modules:**
-
-- **1.1:** one agent ↔ tools — how a model/tool turn works.
-- **1.2:** coordinator ↔ several agents — who owns and organizes delegated work.
-- **1.3:** coordinator → subagent invocation — how spawning and context transfer are configured.
-
-**Exam recognition signal:** A question mentions `tool_use`, `tool_result`, `stop_reason`, handlers, or repeated model calls.
-
-## The idea
-
-Claude chooses which available tool to request. The coordinator executes the matching handler, records the result, and calls Claude again with the updated history.
+## Read this first — what exists before Claude starts
 
 ```text
-Coordinator calls Claude with history + tool definitions
-                         |
-                         v
-              Claude requests calculator
-                         |
-                         v
-          Coordinator finds calculator handler
-                         |
-                         v
-             Handler returns result: 102
-                         |
-                         v
-        Coordinator adds tool_result to history
-                         |
-                         v
-             Coordinator calls Claude again
-                         |
-                         v
-                Claude returns end_turn
+HOST / RUNTIME loads:
+
+1. conversation history
+   [user question]
+
+2. tool definitions Claude may request
+   [calculator: “multiply two numbers”]
+
+3. private handler map
+   calculator → real deterministic calculator code
 ```
 
-## Run the lesson
+Claude sees the conversation and tool definitions. Claude does **not** run or see the handler code.
 
-This simulation uses no network and no API tokens. It replaces the real Claude API with a tiny fake so the loop is easy to see.
+## The complete flow
+
+```text
+HOST / RUNTIME                         CLAUDE
+────────────────────────────────────────────────────────
+load history + tool definitions
+call Claude ─────────────────────────> sees question + tools
+                                      decides: “use calculator”
+receives tool request <────────────── tool_use(calculator, {17, 6})
+finds handler and runs code
+gets result: 102
+adds tool_result to history
+call same conversation again ────────> sees result: 102
+                                      decides: “I can answer now”
+receives final text <──────────────── end_turn
+return final answer
+```
+
+## Design pseudocode
+
+[Open `agent-loop-design.ts`](./agent-loop-design.ts)
+
+```text
+load conversation + tool definitions + handlers
+
+LOOP:
+  call Claude with conversation + tool definitions
+
+  if Claude requests a tool:
+    runtime runs matching handler
+    runtime adds tool result to conversation
+    loop again
+
+  if Claude ends the turn:
+    return final answer
+```
+
+## Who owns what?
+
+| Part | Owns |
+|---|---|
+| Claude | Choosing whether to request an available tool; interpreting its result |
+| Host/runtime | Calling Claude, running the requested handler, preserving history |
+| Tool handler | Deterministic work such as calculation, database access, or a file read |
+
+## How this differs from the next lessons
+
+- **1.1:** one Claude conversation ↔ tools.
+- **1.2:** one coordinator agent organizes several agents.
+- **1.3:** the concrete configuration and information passed when spawning those agents.
+- **1.4:** a tool handler blocks an unsafe action with a deterministic gate.
+
+## Exam recognition signal
+
+Look for `tool_use`, `tool_result`, `stop_reason`, handlers, or repeated model calls.
+
+## Optional runnable implementation reference
+
+[Open `agent-loop.mjs`](./agent-loop.mjs)
+
+This is a token-free simulation. Only read it after the flow makes sense; it adds JavaScript details, not a new architectural idea.
 
 ```bash
 node agent-loop.mjs
 ```
 
-## What to notice in the code
+## Active recall
 
-1. `toolDefinitions` describe what Claude may request.
-2. `handlers` connect tool names to real executable functions.
-3. `messages` holds the session history.
-4. The assistant `tool_use` and external `tool_result` are separate messages.
-5. The `while` loop calls Claude again after adding the result.
-6. `end_turn` ends the loop; the iteration limit is only a safety boundary.
-
-## Recall question
-
-Who chooses the tool, who executes the handler, and which line starts the next model turn?
+Claude asks for a calculator. What happens next, and which component does it?

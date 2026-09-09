@@ -9,74 +9,110 @@
 
 ## Module identity — organizing several agents
 
-**What this module is:** The **architecture and responsibility model** for several agents working on one goal. A central coordinator decomposes the task, delegates to specialist subagents, receives every result, checks coverage, and re-delegates gaps.
+**What this is:** The responsibility design for **one coordinator agent and several specialist subagents**.
 
-**One thing to remember:** **The coordinator owns the whole, while each subagent owns only its assignment.**
+**Remember:** **The coordinator owns the whole; each subagent owns only its assignment.**
 
-**What it is not:** This is not mainly about the low-level model/tool loop from 1.1, nor about the exact SDK configuration and metadata format from 1.3. It answers **who coordinates what**, not precisely **how the invocation is wired**.
+**Not this:** It is not primarily about tool handlers (1.1), nor the SDK configuration and metadata shape (1.3). It is about who decides the research plan, checks breadth, and fixes gaps.
 
-**Actor naming:** Here, the coordinator is a **Claude agent role**, not the external loop code shown in 1.1. The runtime still executes that coordinator agent's tool requests underneath.
-
-**How it differs from the neighboring modules:**
-
-- **1.1:** one agent repeatedly uses tools.
-- **1.2:** one coordinator organizes multiple isolated agents.
-- **1.3:** the concrete spawning gate, agent definitions, parallel calls, and context payloads.
-
-**Exam recognition signal:** A final result misses entire categories, agents duplicate work, agents communicate directly, or nobody evaluates and fills coverage gaps.
-
-## The smallest useful picture
+## Read this first — what exists before work starts
 
 ```text
-                         ┌── explicit prompt ──> Web-search subagent
-User topic ──> COORDINATOR                              │
-                 │        └── explicit prompt ──> Document subagent
-                 │                                     │
-                 └──── receives every result <─────────┘
-                                    │
-                         evaluate coverage gaps
-                                    │
-                    missing topic? re-delegate through hub
-                                    │
-                              final report
+HOST / RUNTIME loads:
+
+1. coordinator agent
+   overall goal: answer the user’s broad question
+
+2. subagent definitions
+   web researcher, document analyst, etc.
+
+3. Agent tool
+   lets the coordinator request a named subagent
 ```
 
-The coordinator owns the whole process:
+The coordinator is a **Claude agent role**. The host/runtime still executes its `Agent` tool requests underneath, using the same basic loop from 1.1.
 
-1. Decompose the broad topic.
-2. Select a subagent for each assignment.
-3. Put every required fact into that invocation's context object.
-4. Collect results—subagents never pass results directly to one another.
-5. Evaluate coverage and re-delegate missing work.
+## The complete flow
 
-## Run it
+```text
+USER gives broad topic
+        ↓
+COORDINATOR receives it
+        ↓
+COORDINATOR decomposes it into full breadth
+        ↓
+COORDINATOR requests subagents with explicit assignments
+        ↓
+HOST/RUNTIME starts isolated subagents
+        ↓
+SUBAGENTS return results only to COORDINATOR
+        ↓
+COORDINATOR checks coverage against original topic
+        ↓
+missing category? ─ yes → targeted re-delegation → check again
+        ↓ no
+COORDINATOR produces final report
+```
+
+## Design pseudocode
+
+[Open `hub-and-spoke-design.ts`](./hub-and-spoke-design.ts)
+
+```text
+subtopics = coordinator decomposes broad topic
+
+for each independent assignment:
+  coordinator requests a named subagent
+  request includes assignment + all needed context
+
+runtime returns results to coordinator
+coverage = coordinator evaluates results
+
+while coverage has gaps:
+  coordinator re-delegates targeted missing work
+
+return coordinator’s final report
+```
+
+## Who owns what?
+
+| Part | Owns |
+|---|---|
+| Coordinator agent | Decomposition, agent selection, explicit context, aggregation, gap repair |
+| Subagent | Its bounded assignment only |
+| Host/runtime | Starting subagents and returning their results to the coordinator |
+
+## The rule that makes it hub-and-spoke
+
+```text
+subagent A ─X─> subagent B
+
+subagent A ─> coordinator ─> subagent B
+```
+
+For this exam, all information between subagents passes through the coordinator.
+
+## How this differs from neighboring lessons
+
+- **1.1:** the model/tool loop underneath any agent.
+- **1.2:** the multi-agent plan and ownership model.
+- **1.3:** how named subagents are spawned and what their isolated contexts contain.
+- **1.4:** deterministic rules that block an invalid action within a workflow.
+
+## Exam recognition signal
+
+The result misses whole categories, agents duplicate work, agents communicate directly, or no one checks coverage after delegation.
+
+## Optional runnable implementation reference
+
+[Open `hub-and-spoke.mjs`](./hub-and-spoke.mjs)
+
+This token-free simulation adds JavaScript detail. Read it only after the flow and ownership model feel clear.
 
 ```bash
 node hub-and-spoke.mjs
 ```
 
-No API, network access, or tokens are used. The two subagents are deterministic functions so you can see the orchestration without SDK noise.
-
-## What the simulation does
-
-The coordinator decomposes `renewable energy technologies` into six categories. On the first pass, the mock document agent fails to cover biomass. The coordinator—not either subagent—detects that gap and sends an explicit, targeted second request to the web agent. The final coverage becomes 100%.
-
-## Read the code in this order
-
-1. `decompose()` — breadth belongs to the coordinator.
-2. `makeContext()` — isolated subagents only know explicitly passed context.
-3. `invokeSubagent()` — the coordinator is the hub for every invocation.
-4. `assessCoverage()` — aggregation is not enough; the hub evaluates quality.
-5. `while` loop in `research()` — gaps cause targeted re-delegation.
-
-## Exam rules made visible
-
-- **Missing entire categories:** inspect coordinator decomposition first.
-- **Poor subagent result:** inspect the context passed by the coordinator.
-- **Subagent A needs output from B:** the coordinator must pass it explicitly.
-- **A simple dispatcher stops after one pass; a coordinator evaluates and refines.**
-- For this exam, choose strict hub-and-spoke communication even though real products may support other topologies.
-
 ## Active recall
 
-If the final report covers solar and wind deeply but completely misses geothermal and tidal, which component is the first suspect—and why?
+A report covers solar and wind deeply but omits geothermal and tidal. Which role made the first mistake, and what should happen next?

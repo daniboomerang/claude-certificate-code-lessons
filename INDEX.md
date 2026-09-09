@@ -1,13 +1,15 @@
 # CCAR-F lesson index
 
-Each completed lesson links to its explanation and code example. Unlinked items are placeholders for future lessons.
+Read each lesson in this order: **README → design pseudocode → optional runnable reference.**
 
 ## Domain 1 — Agentic Architecture & Orchestration (27%)
 
 - [1.1 — Design and implement agentic loops for autonomous task execution](./01-agentic-architecture-and-orchestration/1.1-agentic-loops/README.md)
-  - [Code example](./01-agentic-architecture-and-orchestration/1.1-agentic-loops/agent-loop.mjs)
+  - [Design pseudocode — read first](./01-agentic-architecture-and-orchestration/1.1-agentic-loops/agent-loop-design.ts)
+  - [Optional runnable reference](./01-agentic-architecture-and-orchestration/1.1-agentic-loops/agent-loop.mjs)
 - [1.2 — Orchestrate multi-agent systems with coordinator-subagent patterns](./01-agentic-architecture-and-orchestration/1.2-orchestration-patterns/README.md)
-  - [Code example](./01-agentic-architecture-and-orchestration/1.2-orchestration-patterns/hub-and-spoke.mjs)
+  - [Design pseudocode — read first](./01-agentic-architecture-and-orchestration/1.2-orchestration-patterns/hub-and-spoke-design.ts)
+  - [Optional runnable reference](./01-agentic-architecture-and-orchestration/1.2-orchestration-patterns/hub-and-spoke.mjs)
 - [1.3 — Configure subagent invocation, context passing, and spawning](./01-agentic-architecture-and-orchestration/1.3-subagent-invocation-context/README.md)
   - [Pseudocode example](./01-agentic-architecture-and-orchestration/1.3-subagent-invocation-context/context-passing.ts)
 - [1.4 — Implement multi-step workflows with enforcement and handoff patterns](./01-agentic-architecture-and-orchestration/1.4-workflow-enforcement-handoff/README.md)
