@@ -31,4 +31,3 @@ RETURN coordinator's final report
 // Coordinator: breadth, delegation, aggregation, gap repair.
 // Subagent: only its bounded assignment.
 // Host/runtime: actually starts subagents and carries results back.
-

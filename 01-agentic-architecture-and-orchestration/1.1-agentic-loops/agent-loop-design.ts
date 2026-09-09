@@ -25,4 +25,3 @@ LOOP until Claude says "I am finished":
 // Claude chooses which available tool to request.
 // The host/runtime finds and runs the handler.
 // The conversation history carries the result into the next Claude turn.
-
