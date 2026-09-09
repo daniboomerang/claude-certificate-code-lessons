@@ -7,6 +7,24 @@
 - Curriculum: [Multi-Agent Orchestration](https://claudecertificationguide.com/learn/1-agentic-architecture/1-2-orchestration-patterns)
 - Exercise: **Build a Hub-and-Spoke Research Coordinator**
 
+## Module identity — organizing several agents
+
+**What this module is:** The **architecture and responsibility model** for several agents working on one goal. A central coordinator decomposes the task, delegates to specialist subagents, receives every result, checks coverage, and re-delegates gaps.
+
+**One thing to remember:** **The coordinator owns the whole, while each subagent owns only its assignment.**
+
+**What it is not:** This is not mainly about the low-level model/tool loop from 1.1, nor about the exact SDK configuration and metadata format from 1.3. It answers **who coordinates what**, not precisely **how the invocation is wired**.
+
+**Actor naming:** Here, the coordinator is a **Claude agent role**, not the external loop code shown in 1.1. The runtime still executes that coordinator agent's tool requests underneath.
+
+**How it differs from the neighboring modules:**
+
+- **1.1:** one agent repeatedly uses tools.
+- **1.2:** one coordinator organizes multiple isolated agents.
+- **1.3:** the concrete spawning gate, agent definitions, parallel calls, and context payloads.
+
+**Exam recognition signal:** A final result misses entire categories, agents duplicate work, agents communicate directly, or nobody evaluates and fills coverage gaps.
+
 ## The smallest useful picture
 
 ```text
@@ -62,4 +80,3 @@ The coordinator decomposes `renewable energy technologies` into six categories. 
 ## Active recall
 
 If the final report covers solar and wind deeply but completely misses geothermal and tidal, which component is the first suspect—and why?
-
